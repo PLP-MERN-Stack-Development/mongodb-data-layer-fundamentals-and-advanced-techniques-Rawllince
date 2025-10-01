@@ -1,59 +1,187 @@
-# MongoDB Fundamentals - Week 1
+Installation & Setup
+1. Install MongoDB Community Edition
 
-## Setup Instructions
+Follow the official MongoDB installation guide for your operating system:
 
-Before you begin this assignment, please make sure you have the following installed:
+Windows: Install MongoDB on Windows
 
-1. **MongoDB Community Edition** - [Installation Guide](https://www.mongodb.com/docs/manual/administration/install-community/)
-2. **MongoDB Shell (mongosh)** - This is included with MongoDB Community Edition
-3. **Node.js** - [Download here](https://nodejs.org/)
+macOS: Install MongoDB on macOS
 
-### Node.js Package Setup
+Linux: Install MongoDB on Linux
 
-Once you have Node.js installed, run the following commands in your assignment directory:
+This installs:
 
-```bash
-# Initialize a package.json file
-npm init -y
+mongod → MongoDB server
 
-# Install the MongoDB Node.js driver
-npm install mongodb
-```
+mongosh → MongoDB shell (used to run commands)
 
-## Assignment Overview
+2. Start the MongoDB Server
+mongodb
 
-This week focuses on MongoDB fundamentals including:
-- Creating and connecting to MongoDB databases
-- CRUD operations (Create, Read, Update, Delete)
-- MongoDB queries and filters
-- Aggregation pipelines
-- Indexing for performance
+3. Connect to MongoDB
 
-## Submission
+Open another terminal:
 
-Complete all the exercises in this assignment and push your code to GitHub using the provided GitHub Classroom link.
+mongosh
 
-## Getting Started
+📝 Tasks
+Task 1: Database & Collection Setup
 
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Install MongoDB locally or set up a MongoDB Atlas account
-4. Run the provided `insert_books.js` script to populate your database
-5. Complete the tasks in the assignment document
+Create (or switch to) the database:
 
-## Files Included
+use plp_bookstore
 
-- `Week1-Assignment.md`: Detailed assignment instructions
-- `insert_books.js`: Script to populate your MongoDB database with sample book data
 
-## Requirements
+Create a collection named books:
 
-- Node.js (v18 or higher)
-- MongoDB (local installation or Atlas account)
-- MongoDB Shell (mongosh) or MongoDB Compass
+db.createCollection("books")
 
-## Resources
+Task 2: Basic CRUD Operations
+Insert Books
 
-- [MongoDB Documentation](https://docs.mongodb.com/)
-- [MongoDB University](https://university.mongodb.com/)
-- [MongoDB Node.js Driver](https://mongodb.github.io/node-mongodb-native/) 
+Insert at least 10 books into the books collection:
+
+db.books.insertMany([
+  {
+    title: "Things Fall Apart",
+    author: "Chinua Achebe",
+    genre: "Fiction",
+    published_year: 1958,
+    price: 12.99,
+    in_stock: true,
+    pages: 209,
+    publisher: "Heinemann"
+  },
+  {
+    title: "Americanah",
+    author: "Chimamanda Ngozi Adichie",
+    genre: "Romance",
+    published_year: 2013,
+    price: 18.75,
+    in_stock: false,
+    pages: 588,
+    publisher: "Knopf"
+  }
+  // ... add 8+ more books
+]);
+
+Queries
+
+Find all books in a specific genre:
+
+db.books.find({ genre: "Fiction" });
+
+
+Find books published after a certain year:
+
+db.books.find({ published_year: { $gt: 2000 } });
+
+
+Find books by a specific author:
+
+db.books.find({ author: "Chimamanda Ngozi Adichie" });
+
+
+Update the price of a book:
+
+db.books.updateOne(
+  { title: "Things Fall Apart" },
+  { $set: { price: 14.99 } }
+);
+
+
+Delete a book by title:
+
+db.books.deleteOne({ title: "So Long a Letter" });
+
+Task 3: Advanced Queries
+
+Books in stock & published after 2010:
+
+db.books.find({ in_stock: true, published_year: { $gt: 2010 } });
+
+
+Projection (show only title, author, price):
+
+db.books.find({}, { title: 1, author: 1, price: 1, _id: 0 });
+
+
+Sort by price:
+
+db.books.find().sort({ price: 1 });   // ascending
+db.books.find().sort({ price: -1 });  // descending
+
+
+Pagination (5 books per page):
+
+db.books.find().skip(0).limit(5); // page 1
+db.books.find().skip(5).limit(5); // page 2
+
+Task 4: Aggregation Pipelines
+
+Average price of books by genre:
+
+db.books.aggregate([
+  { $group: { _id: "$genre", avgPrice: { $avg: "$price" } } }
+]);
+
+
+Author with the most books:
+
+db.books.aggregate([
+  { $group: { _id: "$author", count: { $sum: 1 } } },
+  { $sort: { count: -1 } },
+  { $limit: 1 }
+]);
+
+
+Group by publication decade:
+
+db.books.aggregate([
+  {
+    $project: {
+      decade: { $subtract: ["$published_year", { $mod: ["$published_year", 10] }] }
+    }
+  },
+  { $group: { _id: "$decade", count: { $sum: 1 } } },
+  { $sort: { _id: 1 } }
+]);
+
+Task 5: Indexing
+
+Indexes improve performance of queries.
+
+Create index on title:
+
+db.books.createIndex({ title: 1 });
+
+
+Compound index on author + published_year:
+
+db.books.createIndex({ author: 1, published_year: -1 });
+
+
+Test performance with explain():
+
+db.books.find({ title: "Americanah" }).explain("executionStats");
+
+db.books.find({ author: "Chimamanda Ngozi Adichie", published_year: { $gt: 2000 } }).explain("executionStats");
+
+
+Look for:
+
+COLLSCAN → collection scan (slower)
+
+IXSCAN → index scan (faster)
+
+✅ Expected Outcomes
+
+A functioning MongoDB database plp_bookstore with structured book data.
+
+Working CRUD operations (insert, find, update, delete).
+
+Advanced queries with projection, sorting, and pagination.
+
+Aggregations that analyze and group data.
+
+Indexes that improve performance (IXSCAN instead of COLLSCAN).

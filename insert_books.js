@@ -10,129 +10,109 @@ const uri = 'mongodb://localhost:27017';
 const dbName = 'plp_bookstore';
 const collectionName = 'books';
 
-// Sample book data
-const books = [
+// Insert at least 10 book documents
+db.books.insertMany([
   {
-    title: 'To Kill a Mockingbird',
-    author: 'Harper Lee',
-    genre: 'Fiction',
-    published_year: 1960,
+    title: "Things Fall Apart",
+    author: "Chinua Achebe",
+    genre: "Fiction",
+    published_year: 1958,
     price: 12.99,
     in_stock: true,
-    pages: 336,
-    publisher: 'J. B. Lippincott & Co.'
+    pages: 209,
+    publisher: "Heinemann"
   },
   {
-    title: '1984',
-    author: 'George Orwell',
-    genre: 'Dystopian',
-    published_year: 1949,
+    title: "Petals of Blood",
+    author: "Ngugi wa Thiong'o",
+    genre: "Political Fiction",
+    published_year: 1977,
+    price: 15.50,
+    in_stock: true,
+    pages: 400,
+    publisher: "East African Publishing House"
+  },
+  {
+    title: "Americanah",
+    author: "Chimamanda Ngozi Adichie",
+    genre: "Romance",
+    published_year: 2013,
+    price: 18.75,
+    in_stock: false,
+    pages: 588,
+    publisher: "Knopf"
+  },
+  {
+    title: "The Famished Road",
+    author: "Ben Okri",
+    genre: "Magical Realism",
+    published_year: 1991,
+    price: 14.00,
+    in_stock: true,
+    pages: 500,
+    publisher: "Jonathan Cape"
+  },
+  {
+    title: "Season of Migration to the North",
+    author: "Tayeb Salih",
+    genre: "Fiction",
+    published_year: 1966,
     price: 10.99,
     in_stock: true,
-    pages: 328,
-    publisher: 'Secker & Warburg'
+    pages: 169,
+    publisher: "Heinemann"
   },
   {
-    title: 'The Great Gatsby',
-    author: 'F. Scott Fitzgerald',
-    genre: 'Fiction',
-    published_year: 1925,
+    title: "So Long a Letter",
+    author: "Mariama Bâ",
+    genre: "Drama",
+    published_year: 1979,
     price: 9.99,
     in_stock: true,
-    pages: 180,
-    publisher: 'Charles Scribner\'s Sons'
+    pages: 90,
+    publisher: "Heinemann"
   },
   {
-    title: 'Brave New World',
-    author: 'Aldous Huxley',
-    genre: 'Dystopian',
-    published_year: 1932,
-    price: 11.50,
-    in_stock: false,
-    pages: 311,
-    publisher: 'Chatto & Windus'
-  },
-  {
-    title: 'The Hobbit',
-    author: 'J.R.R. Tolkien',
-    genre: 'Fantasy',
-    published_year: 1937,
-    price: 14.99,
-    in_stock: true,
-    pages: 310,
-    publisher: 'George Allen & Unwin'
-  },
-  {
-    title: 'The Catcher in the Rye',
-    author: 'J.D. Salinger',
-    genre: 'Fiction',
-    published_year: 1951,
-    price: 8.99,
-    in_stock: true,
-    pages: 224,
-    publisher: 'Little, Brown and Company'
-  },
-  {
-    title: 'Pride and Prejudice',
-    author: 'Jane Austen',
-    genre: 'Romance',
-    published_year: 1813,
-    price: 7.99,
-    in_stock: true,
-    pages: 432,
-    publisher: 'T. Egerton, Whitehall'
-  },
-  {
-    title: 'The Lord of the Rings',
-    author: 'J.R.R. Tolkien',
-    genre: 'Fantasy',
-    published_year: 1954,
-    price: 19.99,
-    in_stock: true,
-    pages: 1178,
-    publisher: 'Allen & Unwin'
-  },
-  {
-    title: 'Animal Farm',
-    author: 'George Orwell',
-    genre: 'Political Satire',
-    published_year: 1945,
-    price: 8.50,
-    in_stock: false,
-    pages: 112,
-    publisher: 'Secker & Warburg'
-  },
-  {
-    title: 'The Alchemist',
-    author: 'Paulo Coelho',
-    genre: 'Fiction',
+    title: "Nervous Conditions",
+    author: "Tsitsi Dangarembga",
+    genre: "Fiction",
     published_year: 1988,
-    price: 10.99,
-    in_stock: true,
-    pages: 197,
-    publisher: 'HarperOne'
-  },
-  {
-    title: 'Moby Dick',
-    author: 'Herman Melville',
-    genre: 'Adventure',
-    published_year: 1851,
-    price: 12.50,
+    price: 11.99,
     in_stock: false,
-    pages: 635,
-    publisher: 'Harper & Brothers'
+    pages: 204,
+    publisher: "Women’s Press"
   },
   {
-    title: 'Wuthering Heights',
-    author: 'Emily Brontë',
-    genre: 'Gothic Fiction',
-    published_year: 1847,
-    price: 9.99,
+    title: "Purple Hibiscus",
+    author: "Chimamanda Ngozi Adichie",
+    genre: "Coming-of-age",
+    published_year: 2003,
+    price: 13.99,
     in_stock: true,
-    pages: 342,
-    publisher: 'Thomas Cautley Newby'
+    pages: 307,
+    publisher: "Algonquin Books"
+  },
+  {
+    title: "Half of a Yellow Sun",
+    author: "Chimamanda Ngozi Adichie",
+    genre: "Historical Fiction",
+    published_year: 2006,
+    price: 16.49,
+    in_stock: true,
+    pages: 448,
+    publisher: "Knopf"
+  },
+  {
+    title: "Devil on the Cross",
+    author: "Ngugi wa Thiong'o",
+    genre: "Satire",
+    published_year: 1980,
+    price: 12.50,
+    in_stock: true,
+    pages: 250,
+    publisher: "Heinemann"
   }
-];
+]);
 
 // Function to insert books into MongoDB
 async function insertBooks() {
